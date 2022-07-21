@@ -1,40 +1,95 @@
-const {request, response } = require('express')
+const {request, response } = require('express');
+const Usuario = require('../models/usuario');
+const passcrypt = require('bcryptjs');
 
- const usuariosGet = (req = request, res=response )=>{
+ const usuariosGet = async(req = request, res=response )=>{
 
-    const {q, nombre='No nombre', apikey, page=1, limit=10} = req.query;
-  
+    const {limite = 5, desde = 0 } = req.query;
+    const query = {estado:true};
+
+    // const usuarios = await Usuario.find(query)
+    //                     .skip(desde)
+    //                     .limit(Number(limite));
+
+    // const total = await Usuario.countDocuments(query);
+
+    //Mejor disparo las 2 promesas simultaneamente
+    const resp = await Promise.all([
+        Usuario.countDocuments(query),
+        Usuario.find(query)
+            .skip(Number(desde))
+            .limit(Number(limite))
+    ]);
+
+    //Desestructurando un array
+    const [total, usuarios]= resp;
     res.json({
-        ok:true,
-        msg:'get Api - Controlador',
-        q, nombre, apikey,page,limit 
+        // resp
+        total,
+        usuarios
+        
     }); 
 }
 
-const usuarioPost = (req, res=response )=>{
-    const {nombre, edad} = req.body;
+const usuarioPost = async(req, res=response )=>{
+    
+    const {nombre,correo, password, role } = req.body;
 
-    res.status(400).json({
-        ok:true,
-        msg:'put Api - Controlador',
-        nombre, edad
-    }); 
+    try {
+       
+        const usuario = new Usuario({nombre,correo, password, role});
+
+        //Encriptar contraseña, contraseña de una sola via, solo se matchea no se reescribe
+        const salt = passcrypt.genSaltSync();
+        usuario.password = passcrypt.hashSync(password, salt);
+
+        await usuario.save()
+
+        //Generar el Token - JWT
+        // const token = await generarJWT(usuario.id, usuario.email
+
+        res.status(200).json({
+            ok:true,
+            usuario
+        }); 
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok:false,
+            msg:'Error creando usuario, Hablar con la administración'
+        })
+    }
 }
 
-const usuarioPut =  (req, res=response )=>{
+const usuarioPut =  async(req, res=response )=>{
     const {id }= req.params;
+    const {_id, password, google,correo, ...resto } = req.body;
 
+    if (password){
+        const salt = passcrypt.genSaltSync();
+        resto.password = passcrypt.hashSync(password, salt);
+    };
+
+    const usuario = await Usuario.findByIdAndUpdate(id, resto, {new:true} );
     res.status(201).json({
         ok:true,
-        msg:'post Api - Controlador',
-        id
+        usuario
     }); 
 }
 
-const usuarioDelete =  (req, res=response )=>{
+const usuarioDelete =  async(req, res=response )=>{
+    const {id }= req.params;
+  
+    const usuario = await Usuario.findByIdAndUpdate(id, {estado:false}, {new:true} );
+    res.status(201).json({
+        ok:true,
+        usuario
+    }); 
     res.json({
         ok:true,
-        msg:'delete Api - Controlador'
+        msg:'delete Api - Controlador',
+        usuario
     }); 
 }
 
