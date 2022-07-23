@@ -40,7 +40,7 @@ const usuarioPost = async(req, res=response )=>{
         const usuario = new Usuario({nombre,correo, password, role});
 
         //Encriptar contraseña, contraseña de una sola via, solo se matchea no se reescribe
-        const salt = passcrypt.genSaltSync();
+        const salt = passcrypt.genSaltSync();//este metodo genera el numero de vuelta del pass, default(10)
         usuario.password = passcrypt.hashSync(password, salt);
 
         await usuario.save()
@@ -80,16 +80,16 @@ const usuarioPut =  async(req, res=response )=>{
 
 const usuarioDelete =  async(req, res=response )=>{
     const {id }= req.params;
+    const userAuth = req.usuario;
   
+    //Borrar fisicamente sería
+    //const usuario = await Usuario.findByIdAndDelete(id);
+
     const usuario = await Usuario.findByIdAndUpdate(id, {estado:false}, {new:true} );
     res.status(201).json({
         ok:true,
-        usuario
-    }); 
-    res.json({
-        ok:true,
-        msg:'delete Api - Controlador',
-        usuario
+        usuario,
+        userAuth:userAuth,
     }); 
 }
 

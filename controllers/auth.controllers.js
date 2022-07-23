@@ -3,6 +3,8 @@ const {response } = require('express');
 const Usuario = require('../models/usuario');
 const passcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/generar-jwt');
+const { googleVerify } = require('../helpers/google-verify');
+
 
 const login =  async(req, res=response )=>{
 
@@ -53,6 +55,59 @@ const login =  async(req, res=response )=>{
     }
 }
 
+const googleSignIn = async(req, res=response)=>{
+
+    const { id_token } = req.body;
+
+    try {
+        const { nombre, img, correo } = await googleVerify(id_token);
+        // const googleuser = await googleVerify(id_token);
+        // console.log(googleuser);
+
+        let usuario = await Usuario.findOne( {correo} )
+
+        if(!usuario){
+            //Tengo q crear el usuario
+            const data = {
+                nombre,
+                correo,
+                password: ':p',
+                img,
+                google:true
+            };
+
+            usuario = new Usuario(data);
+            await usuario.save();
+        }
+
+        // Si el usuario en DB
+        if(!usuario.estado){
+            return res.status(401).json({
+                ok:false,
+                msg:'Hable con el Administrador, usuario bloqueado, Google-Sign In'
+            })
+        }
+
+        //  Generar el JWT
+         const token = await generarJWT(usuario.id);
+
+        res.json({
+            ok:true,
+            usuario,
+            token
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            ok:false,
+            msg:'Error en Google Sign In - Hablar con el Administrador'
+        })
+    }
+
+}
+
 module.exports ={
-    login
+    login,
+    googleSignIn
 }
