@@ -1,4 +1,5 @@
 
+const { Categoria, Producto } = require('../models');
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
 
@@ -21,10 +22,43 @@ const isRoleValid = async(role='') =>{
     if(!existUser){
         throw new Error(`Este usuario: ${id}, no existe en la DB`);
     };
+  };
+
+  /**
+   * Categorías 
+   * @param {id de la categoria} id 
+   */
+  const existCategoriaById = async(id)=>{
+    const existCategoria = await Categoria.findById(id);
+    if(!existCategoria){
+        throw new Error(`Esta categoría: ${id}, no existe en la DB`);
+    };
+  };
+
+  const existProductoById = async(id)=>{
+    const existProducto = await Producto.findById(id);
+    if(!existProducto){
+        throw new Error(`Este producto: ${id}, no existe en la DB`);
+    };
   }
 
+  const collectionsPermitidas = (collection = '', collections = [])=>{
+      const incluida = collections.includes(collection);
+
+      if(!incluida){
+        throw new Error(`La collection ${collection} no es permitida, ${collections}`)
+      }
+      return true
+  }
+
+  /**
+   * Validar collections permitidas
+   */
   module.exports ={
     isRoleValid,
     emailAlreadyDone,
-    existUserById
+    existUserById,
+    existCategoriaById,
+    existProductoById,
+    collectionsPermitidas
   }
