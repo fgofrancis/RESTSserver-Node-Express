@@ -30,7 +30,7 @@ const passcrypt = require('bcryptjs');
         
     }); 
 }
-
+ 
 const usuarioPost = async(req, res=response )=>{
     
     const {nombre,correo, password, role } = req.body;

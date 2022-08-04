@@ -56,7 +56,7 @@ const buscarCategoria = async(termino = '', res=response)=>{
         })
     };
 
-    const regex = new RegExp(termino, 'i');//incensible a mayuscula o minuscula
+    const regex = new RegExp(termino, 'i');//incensible a mayúscula o minúscula
 
     const [total, categorias] = await Promise.all([
         Categoria.count({

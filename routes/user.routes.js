@@ -51,7 +51,7 @@ router.put('/:id',
 router.delete('/:id',
   [
     validarJWT,
-    // esAdminRole, este middleware con el de abajo debe trabajar uno u otro. el 1ero. forza a ser administrador solamente
+    // esAdminRole, //este middleware con el de abajo debe trabajar uno u otro. el 1ero. forza a ser administrador solamente
     tieneRole( 'ADMIN_ROLE', 'VENTAS_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(existUserById),

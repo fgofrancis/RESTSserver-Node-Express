@@ -21,11 +21,11 @@ router.put('/:collection/:id',
     // actualizarImagen,
     actualizarImagenCloudinary);
 
-    router.get('/:collection/:id',
+router.get('/:collection/:id',
         [
             check('id', 'El id debe ser un id de mongo').isMongoId(),
             check('collection').custom( c=>collectionsPermitidas( c, ['usuarios','productos']) ),
             validarCampos
-        ], mostrarImagen);
+    ], mostrarImagen);
 
 module.exports=router;
