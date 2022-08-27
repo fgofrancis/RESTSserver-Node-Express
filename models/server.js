@@ -12,12 +12,19 @@ class Server{
         this.port = process.env.PORT;
 
         this.paths ={
-            auth:       '/api/auth',
-            buscar:     '/api/buscar',
-            uploads:    '/api/uploads',
-            usuarios:   '/api/usuarios',
-            categorias: '/api/categorias', 
-            productos:  '/api/productos' 
+            auth:           '/api/auth',
+            buscar:         '/api/buscar',
+            uploads:        '/api/uploads',
+            usuarios:       '/api/usuarios',
+            categorias:     '/api/categorias', 
+            productos:      '/api/productos',
+            clientes:       '/api/clientes',
+            ventas:         '/api/ventas' ,
+            bloques:        '/api/bloques',
+            propietarios:   '/api/propietarios',
+            apartamentos:   '/api/apartamentos',
+            cuotas:         '/api/cuotas',
+            pagos:          '/api/pagos'
         }
 
         /* Lo refactoricé por lo de arriba */
@@ -38,7 +45,7 @@ class Server{
 
     async conectarDB(){
         await dbConnection();
-    }
+    }   
 
     middleware(){
 
@@ -62,12 +69,19 @@ class Server{
  
     routes(){
 
-        this.app.use(this.paths.auth,       require('../routes/auth.routes') );
-        this.app.use(this.paths.buscar,     require('../routes/buscar.routes') );
-        this.app.use(this.paths.usuarios,   require('../routes/user.routes') );
-        this.app.use(this.paths.uploads,    require('../routes/uploads.routes') );
-        this.app.use(this.paths.categorias, require('../routes/categorias.routes') );
-        this.app.use(this.paths.productos,  require('../routes/productos.routes') );
+        this.app.use(this.paths.auth,           require('../routes/auth.routes') );
+        this.app.use(this.paths.buscar,         require('../routes/buscar.routes') );
+        this.app.use(this.paths.usuarios,       require('../routes/user.routes') );
+        this.app.use(this.paths.uploads,        require('../routes/uploads.routes') );
+        this.app.use(this.paths.categorias,     require('../routes/categorias.routes') );
+        this.app.use(this.paths.productos,      require('../routes/productos.routes') );
+        this.app.use(this.paths.clientes,       require('../routes/clientes.routes' ) );
+        this.app.use(this.paths.ventas,         require('../routes/ventas.routes' ) );
+        this.app.use(this.paths.bloques,        require('../routes/bloques.routes' ) );
+        this.app.use(this.paths.propietarios,   require('../routes/propietarios.routes' ) );
+        this.app.use(this.paths.apartamentos,   require('../routes/apartamentos.routes' ) );
+        this.app.use(this.paths.cuotas,         require('../routes/cuotas.routes' ) );
+        this.app.use(this.paths.pagos,          require('../routes/pagos.routes' ) );
 
         /* Lo refactorice por lo de arriba */
         // this.app.use(this.authPath, require('../routes/auth.routes') );

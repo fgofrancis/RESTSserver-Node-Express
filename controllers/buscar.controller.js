@@ -37,6 +37,7 @@ const buscarUsuario = async(termino = '', res=response)=>{
             $or:[ {nombre:regex}, {correo:regex} ],
             $and:[ {estado:true} ]
         })
+        
     ])
 
       res.json({

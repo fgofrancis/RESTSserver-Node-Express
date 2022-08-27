@@ -25,3 +25,4 @@ CategoriaSchema.methods.toJSON = function(){
 
 module.exports = model('Categoria', CategoriaSchema);
 
+ 

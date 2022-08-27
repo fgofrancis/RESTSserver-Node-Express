@@ -1,11 +1,11 @@
 
-const { Categoria, Producto } = require('../models');
+const { Categoria, Producto, Venta } = require('../models');
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
 
 const isRoleValid = async(role='') =>{
-    const exiteRole = await Role.findOne({role});
-    if(!exiteRole){
+    const existRole = await Role.findOne({role});
+    if(!existRole){
       throw new Error(`El Role ${role} no está registrado en la DB`);
     }
   };
@@ -40,7 +40,14 @@ const isRoleValid = async(role='') =>{
     if(!existProducto){
         throw new Error(`Este producto: ${id}, no existe en la DB`);
     };
-  }
+  };
+
+  const existVentaById = async(id)=>{
+     const existVenta = await Venta.findById(id); 
+     if(!existVenta){
+        throw new Error(`Esta venta ${id}, no existe en la BD`); 
+     };
+  };
 
   const collectionsPermitidas = (collection = '', collections = [])=>{
       const incluida = collections.includes(collection);
@@ -60,5 +67,6 @@ const isRoleValid = async(role='') =>{
     existUserById,
     existCategoriaById,
     existProductoById,
-    collectionsPermitidas
+    collectionsPermitidas,
+    existVentaById
   }
